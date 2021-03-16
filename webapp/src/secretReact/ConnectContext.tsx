@@ -20,7 +20,7 @@ const ConnectContext = React.createContext<ConnectContextProps>({
   keplrReady: false
 })
 
-interface MessageData{
+interface MessageData {
   message: string
   author: String
 }
@@ -32,7 +32,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
   const [client, setClient] = useState<SigningCosmWasmClient | undefined>(undefined)
   const [reminder, setReminder] = useState("enter message");
   const [address, setAddress] = useState("enter address");
-  const [message, setMessage] = useState<MessageData|undefined>(undefined)
+  const [message, setMessage] = useState<MessageData | undefined>(undefined)
 
   const handleInputMsg = (event: { target: { value: React.SetStateAction<string> } }) => {
     setReminder(event.target.value);
@@ -161,7 +161,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
     const decoded = new TextDecoder().decode(response?.data);
     let message = JSON.parse(decoded);
     console.log('read: ', message)
-    setMessage({message:message.read.message, author:message.read.sender})
+    setMessage({ message: message.read.message, author: message.read.sender })
   }
 
   useEffect(() => {
@@ -182,6 +182,10 @@ const ConnectContextProvider: React.FC = ({ children }) => {
       connectContract();
     }
   }, [client])
+
+  useEffect(() => {
+    console.log(message)
+  }, [message])
 
 
   const addReminder = async () => {
@@ -211,7 +215,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
             <span className="header-address dark-gradient-text">
               {account?.address}
             </span>
-            <button className="button copy-button" onClick={() => myFunction()}><img src={copy}/></button>
+            <button className="button copy-button" onClick={() => myFunction()}><img src={copy} /></button>
           </div>
           <span className="header-hello" >you have</span>
           <span className="header-balance dark-gradient-text"><AnimatedNumber value={Number(account?.balance[0].amount)} style={{
@@ -234,9 +238,14 @@ const ConnectContextProvider: React.FC = ({ children }) => {
           </div>
           <button className="button post-button" onClick={(e) => { addReminder() }}><span>post message</span></button>
         </div>
-        {message!==undefined && (<h1>{message.message} by {message.author}</h1>)}
         <ConnectContext.Provider value={{ keplrReady, account }}>{children}</ConnectContext.Provider>
       </div>
+      {message !== undefined && (
+        <div className={`new-message-container ${message !== undefined ? 'moved' : ''}`}>
+          <span className="new-message dark-gradient-text">{message.message}</span>
+          <span className="new-author dark-gradient-text">by {message.author}</span>
+        </div>
+      )}
     </div>
   )
 }
