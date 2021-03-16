@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { SigningCosmWasmClient, Account } from 'secretjs'
+import { HandleMsg } from '../types/handle_msg'
+import { QueryMsg } from '../types/query_msg'
 
 const chainId = 'holodeck-2'
+const contractAddress = 'secret166vullxuz7wtdq80t4mrzzvje3076s4sx3k2ky'
 
 interface ConnectContextProps {
   keplrReady: boolean
@@ -16,16 +19,23 @@ const ConnectContext = React.createContext<ConnectContextProps>({
 const ConnectContextProvider: React.FC = ({ children }) => {
   const [keplrReady, setKeplrReady] = useState<boolean>(false)
   const [account, setAccount] = useState<Account | undefined>(undefined)
-  //   async componentDidMount() {
-  //     await this.setupKeplr();
+  const [client, setClient] = useState<SigningCosmWasmClient | undefined>(undefined)
+  const [reminder, setReminder] = useState(" ");
 
-  //     const account = await this.secretjs.getAccount(this.state.account.address);
-  //     this.setState({ account });
-  //   }
+  const handleInput = event => {
+    setReminder(event.target.value);
+  };
+
+  const logValue = () => {
+    console.log(name);
+  };
+
+
+
 
   const setupKeplr = async () => {
     // Define sleep
-    const sleep = ms => new Promise(accept => setTimeout(accept, ms))
+    const sleep = (ms: number) => new Promise(accept => setTimeout(accept, ms))
 
     // Wait for Keplr to be injected to the page
     while (!window.keplr && !window.getOfflineSigner && !window.getEnigmaUtils) {
@@ -83,12 +93,19 @@ const ConnectContextProvider: React.FC = ({ children }) => {
     // Enable Keplr.
     // This pops-up a window for the user to allow keplr access to the webpage.
     await window.keplr.enable(chainId)
+
+
+
+    setKeplrReady(true)
+  }
+
+  const setupClient = async () => {
     // Setup SecrtJS with Keplr's OfflineSigner
     // This pops-up a window for the user to sign on each tx we sent
     const keplrOfflineSigner = window.getOfflineSigner(chainId)
     const accounts = await keplrOfflineSigner.getAccounts()
 
-    const secretjs = new SigningCosmWasmClient(
+    setClient(new SigningCosmWasmClient(
       'https://bootstrap.secrettestnet.io', // holodeck - https://bootstrap.secrettestnet.io; mainnet - user your LCD/REST provider
       accounts[0].address,
       keplrOfflineSigner,
@@ -105,22 +122,74 @@ const ConnectContextProvider: React.FC = ({ children }) => {
           gas: '300000'
         }
       }
-    )
+    ))
+  }
 
-    const scrtAccount = await secretjs.getAccount(accounts[0].address)
+  const setupAccount = async () => {
+    const scrtAccount = await client?.getAccount(account?.address)
     setAccount(scrtAccount)
-    setKeplrReady(true)
+  }
+
+  const connectContract = async () => {
+    // Query the current count
+    console.log('Querying contract for current count');
+    let response = await client?.queryContractSmart(contractAddress, { "stats": {} });
+    console.log((response as QueryMsg).stats)
+  }
+
+  const queryMyPosts = async () => {
+    // Increment the counter
+    const handleMsg: HandleMsg = { read: {} }
+    console.log('Updating count');
+    const response = await client?.execute(contractAddress, handleMsg);
+    const decoded = new TextDecoder().decode(response?.data);
+    let message = JSON.parse(decoded);
+    console.log('read: ', message)
+
+
   }
 
   useEffect(() => {
     setupKeplr()
   }, [])
 
+
+  useEffect(() => {
+    if (keplrReady) {
+      setupClient();
+    }
+  }, [keplrReady])
+
+
+  useEffect(() => {
+    if (client) {
+      setupAccount();
+      connectContract();
+    }
+  }, [client])
+
+
+  const addReminder = async (reminderText: string) => {
+    // Increment the counter
+    const handleMsg = { record: { "reminder": reminderText } };
+    console.log('Updating count');
+    const response = await client?.execute(contractAddress, handleMsg);
+    console.log('response: ', response);
+
+  }
+
   return (
     <>
       <h3>
         Hello {account?.address}, you have {account?.balance[0].amount} SCRT
       </h3>
+      <button onClick={(e) => { queryMyPosts() }}>Read</button>
+      <div>
+
+        <input onChange={handleInput} placeholder={reminder} />
+
+        <button onClick={(e) => { addReminder(reminder) }}>Post</button>
+      </div>
       <ConnectContext.Provider value={{ keplrReady, account }}>{children}</ConnectContext.Provider>
     </>
   )
