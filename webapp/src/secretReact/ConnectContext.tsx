@@ -6,8 +6,9 @@ import './scrrrrt.css'
 import AnimatedNumber from "react-animated-number";
 
 const chainId = 'holodeck-2'
-const contractAddress = 'secret166vullxuz7wtdq80t4mrzzvje3076s4sx3k2ky'
+// const contractAddress = 'secret166vullxuz7wtdq80t4mrzzvje3076s4sx3k2ky' // V1
 
+const contractAddress = 'secret1q3dl7vecar6ftgd24s8duy9dxe39pxgvuvrx5c' // V2
 interface ConnectContextProps {
   keplrReady: boolean
   account?: Account
@@ -22,7 +23,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
   const [keplrReady, setKeplrReady] = useState<boolean>(false)
   const [account, setAccount] = useState<Account | undefined>(undefined)
   const [client, setClient] = useState<SigningCosmWasmClient | undefined>(undefined)
-  const [reminder, setReminder] = useState(" ");
+  const [reminder, setReminder] = useState("enter message");
 
   const handleInput = (event: { target: { value: React.SetStateAction<string> } }) => {
     setReminder(event.target.value);
@@ -142,7 +143,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
   const queryMyPosts = async () => {
     // Increment the counter
     const handleMsg: HandleMsg = { read: {} }
-    console.log('Updating count');
+    console.log('Query my posting');
     const response = await client?.execute(contractAddress, handleMsg);
     const decoded = new TextDecoder().decode(response?.data);
     let message = JSON.parse(decoded);
