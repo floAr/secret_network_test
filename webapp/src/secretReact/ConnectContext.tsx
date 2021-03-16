@@ -180,30 +180,42 @@ const ConnectContextProvider: React.FC = ({ children }) => {
 
   }
 
+  function myFunction() {
+    var text = account?.address ?? "no address";
+    navigator.clipboard.writeText(text).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+  }
+
   return (
     <div className="bodyy">
       <div className="main-container frosted-box">
-        <h3 className="header-text">
-          <span className="header-hello">Hello</span>
-          <span className="header-address">
-            {account?.address},
-          </span>
+        <span className="header-text">
+          <span className="header-hello"><h2>Hello</h2></span>
+          <div className="address-container">
+            <span className="header-address dark-gradient-text">
+              {account?.address}
+            </span>
+            <button className="copy-button" onClick={() => myFunction()}></button>
+          </div>
           <span className="header-hello" >you have</span>
-          <span className="header-balance"><AnimatedNumber value={account?.balance[0].amount} style={{
+          <span className="header-balance dark-gradient-text"><AnimatedNumber value={Number(account?.balance[0].amount)} style={{
             transition: '0.8s ease-out',
-            fontSize: 48,
+            fontSize: 24,
             transitionProperty:
               'opacity'
           }}
-          initialValue={account?.balance[0].amount ?? 100 / 2}
+            initialValue={Number(account?.balance[0].amount ?? '100') / 2}
             duration={1000} stepPrecision={0} /> SCRT</span>
-        </h3>
-        <button onClick={(e) => { queryMyPosts() }}>Read</button>
-        <div>
+        </span>
+        <button className="button read-button" onClick={(e) => { queryMyPosts() }}><span>Read</span></button>
+        <div className="message-container">
+          <span>Post a message</span>
+          <input className="input-field" onChange={handleInput} placeholder={reminder} />
 
-          <input onChange={handleInput} placeholder={reminder} />
-
-          <button onClick={(e) => { addReminder(reminder) }}>Post</button>
+          <button className="button post-button" onClick={(e) => { addReminder(reminder) }}><span>Post</span></button>
         </div>
         <ConnectContext.Provider value={{ keplrReady, account }}>{children}</ConnectContext.Provider>
       </div>
