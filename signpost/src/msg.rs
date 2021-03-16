@@ -1,5 +1,6 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use cosmwasm_std::{HumanAddr, Uint128};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InitMsg {
@@ -12,10 +13,15 @@ pub struct InitMsg {
 pub enum HandleMsg {
     /// Records a new reminder for the sender
     Record {
-        reminder: String,
+        message: String,
+        receipient: HumanAddr,
+        // amount: Uint128
     },
     /// Requests the current reminder for the sender
-    Read { }
+    ReadAll { },
+    // Claim {
+    //     id: u64,
+    // }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -36,7 +42,9 @@ pub enum HandleAnswer {
     /// Return a status message and the current reminder and its timestamp, if it exists
     Read {
         status: String,
-        reminder: Option<String>,
+        message: Option<String>,
+        sender: Option<HumanAddr>,
+        // value: Option<Uint128>,
         timestamp: Option<u64>,
     }
 }
@@ -48,5 +56,6 @@ pub enum QueryAnswer {
     /// Return basic statistics about contract
     Stats {
         reminder_count: u64,
+        total_stake: Uint128,
     }
 }
