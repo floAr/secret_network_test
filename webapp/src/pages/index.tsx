@@ -8,7 +8,6 @@ const IndexPage = () => (
   <IndexLayout>
     <Page>
       <ConnectContextProvider>
-        dummy
       </ConnectContextProvider>
     </Page>
   </IndexLayout>

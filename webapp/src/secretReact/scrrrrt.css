@@ -1,7 +1,7 @@
 body {
     background-image: url(./background.svg);
     background-size: 100%;
-    overflow: hidden;
+    overflow: hidden !important;
 }
 
 .bodyy {
@@ -15,32 +15,70 @@ body {
 .main-container {
     display: flex;
     flex-direction: column;
-    height: 50vh;
+    height: 40vh;
+    width: 35vw;
+    min-width: 580px;
 }
 
 .frosted-box {
-    position: relative;
-    background: inherit;
-    border-radius: 2px;
-    overflow: hidden;
+    padding: 10px;
+    border-radius: 10px;
+    background: rgb(245, 245, 245);
+    animation: 1s calc(100 * -.01s) 1 paused both opacify;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: -0.25rem -0.25rem 0.5rem rgba(255, 255, 255, 0.07), 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.12), -0.75rem -0.75rem 1.75rem rgba(255, 255, 255, 0.07), 0.75rem 0.75rem 1.75rem rgba(0, 0, 0, 0.12), inset 8rem 8rem 8rem rgba(0, 0, 0, 0.05), inset -8rem -8rem 8rem rgba(255, 255, 255, 0.05);
 }
 
-.frosted-box:after {
-    content: '';
-    width: 300px;
-    height: 300px;
-    background: inherit;
-    position: absolute;
-    left: -25px;
-    right: 0;
-    top: -25px;
-    bottom: 0;
-    box-shadow: inset 0 0 0 200px rgba(255, 255, 255, 0.05);
-    filter: blur(10px);
+@-webkit-keyframes opacify {
+    to {
+        background: transparent;
+    }
+}
+
+@keyframes opacify {
+    to {
+        background: transparent;
+    }
 }
 
 .header-text {
     display: flex;
     flex-direction: column;
     text-align: center;
+}
+
+.neu-button {
+    box-shadow: -0.25rem -0.25rem 0.5rem rgba(255, 255, 255, 0.07), 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.12), -0.75rem -0.75rem 1.75rem rgba(255, 255, 255, 0.07), 0.75rem 0.75rem 1.75rem rgba(0, 0, 0, 0.12), inset 8rem 8rem 8rem rgba(0, 0, 0, 0.05), inset -8rem -8rem 8rem rgba(255, 255, 255, 0.05);
+}
+
+.button {
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 30px;
+    font-weight: bold;
+    width: fit-content;
+    font-size: larger;
+    padding: 5px 40px;
+    color: #fff;
+    transition: 0.5s;
+    background: rgb(245, 245, 245);
+    animation: 1s calc(100 * -.01s) 1 paused both opacify;
+    backdrop-filter: blur(10px);
+    box-shadow: -0.25rem -0.25rem 0.5rem rgba(255, 255, 255, 0.07), 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.12), -0.75rem -0.75rem 1.75rem rgba(255, 255, 255, 0.07), 0.75rem 0.75rem 1.75rem rgba(0, 0, 0, 0.12), inset 8rem 8rem 8rem rgba(0, 0, 0, 0.05), inset -8rem -8rem 8rem rgba(255, 255, 255, 0.05);
+}
+
+.input-field {
+    height: 10vh;
+    width: 80%;
+    background: rgb(245, 245, 245);
+    animation: 1s calc(100 * -.01s) 1 paused both opacify;
+    backdrop-filter: blur(10px);
+    box-shadow: inset -0.25rem -0.25rem 0.5rem rgba(255, 255, 255, 0.07), inset 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.12), inset -0.75rem -0.75rem 1.75rem rgba(255, 255, 255, 0.07), inset 0.75rem 0.75rem 1.75rem rgba(0, 0, 0, 0.12);
+}
+
+.message-container {
+    display: flex;
+    flex-direction: column;
 }
