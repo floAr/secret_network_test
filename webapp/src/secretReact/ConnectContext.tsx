@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { SigningCosmWasmClient, Account } from 'secretjs'
 import { HandleMsg } from '../types/handle_msg'
 import { QueryMsg } from '../types/query_msg'
+import './scrrrrt.css'
+import AnimatedNumber from "react-animated-number";
 
 const chainId = 'holodeck-2'
 const contractAddress = 'secret166vullxuz7wtdq80t4mrzzvje3076s4sx3k2ky'
@@ -22,7 +24,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
   const [client, setClient] = useState<SigningCosmWasmClient | undefined>(undefined)
   const [reminder, setReminder] = useState(" ");
 
-  const handleInput = event => {
+  const handleInput = (event: { target: { value: React.SetStateAction<string> } }) => {
     setReminder(event.target.value);
   };
 
@@ -179,19 +181,33 @@ const ConnectContextProvider: React.FC = ({ children }) => {
   }
 
   return (
-    <>
-      <h3>
-        Hello {account?.address}, you have {account?.balance[0].amount} SCRT
-      </h3>
-      <button onClick={(e) => { queryMyPosts() }}>Read</button>
-      <div>
+    <div className="bodyy">
+      <div className="main-container frosted-box">
+        <h3 className="header-text">
+          <span className="header-hello">Hello</span>
+          <span className="header-address">
+            {account?.address},
+          </span>
+          <span className="header-hello" >you have</span>
+          <span className="header-balance"><AnimatedNumber value={account?.balance[0].amount} style={{
+            transition: '0.8s ease-out',
+            fontSize: 48,
+            transitionProperty:
+              'opacity'
+          }}
+          initialValue={account?.balance[0].amount ?? 100 / 2}
+            duration={1000} stepPrecision={0} /> SCRT</span>
+        </h3>
+        <button onClick={(e) => { queryMyPosts() }}>Read</button>
+        <div>
 
-        <input onChange={handleInput} placeholder={reminder} />
+          <input onChange={handleInput} placeholder={reminder} />
 
-        <button onClick={(e) => { addReminder(reminder) }}>Post</button>
+          <button onClick={(e) => { addReminder(reminder) }}>Post</button>
+        </div>
+        <ConnectContext.Provider value={{ keplrReady, account }}>{children}</ConnectContext.Provider>
       </div>
-      <ConnectContext.Provider value={{ keplrReady, account }}>{children}</ConnectContext.Provider>
-    </>
+    </div>
   )
 }
 
