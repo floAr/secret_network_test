@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "State",
+  "type": "object",
+  "required": [
+    "max_size",
+    "reminder_count"
+  ],
+  "properties": {
+    "max_size": {
+      "type": "integer",
+      "format": "uint16",
+      "minimum": 0.0
+    },
+    "reminder_count": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HandleMsg",
+  "anyOf": [
+    {
+      "description": "Records a new reminder for the sender",
+      "type": "object",
+      "required": [
+        "record"
+      ],
+      "properties": {
+        "record": {
+          "type": "object",
+          "required": [
+            "reminder"
+          ],
+          "properties": {
+            "reminder": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Requests the current reminder for the sender",
+      "type": "object",
+      "required": [
+        "read"
+      ],
+      "properties": {
+        "read": {
+          "type": "object"
+        }
+      }
+    }
+  ]
+}
