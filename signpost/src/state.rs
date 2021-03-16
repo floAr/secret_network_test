@@ -1,6 +1,6 @@
 use std::{any::type_name};
 use serde::{Deserialize, Serialize};
-use cosmwasm_std::{Storage, ReadonlyStorage, StdResult, StdError};
+use cosmwasm_std::{Storage, ReadonlyStorage, StdResult, StdError, HumanAddr, Uint128};
 use schemars::JsonSchema;
 use serde::de::DeserializeOwned;
 use secret_toolkit::serialization::{Bincode2, Serde};
@@ -11,12 +11,15 @@ pub static CONFIG_KEY: &[u8] = b"config";
 pub struct State {
     pub max_size: u16,
     pub reminder_count: u64,
+    pub total_stake: Uint128,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct Reminder {
+pub struct Message {
     pub content: Vec<u8>,
     pub timestamp: u64,
+    pub sender: HumanAddr,
+    // pub value: Uint128,
 }
 
 pub fn save<T: Serialize, S: Storage>(storage: &mut S, key: &[u8], value: &T) -> StdResult<()> {

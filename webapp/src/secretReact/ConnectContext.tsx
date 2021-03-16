@@ -6,8 +6,9 @@ import './scrrrrt.css'
 import AnimatedNumber from "react-animated-number";
 
 const chainId = 'holodeck-2'
-const contractAddress = 'secret166vullxuz7wtdq80t4mrzzvje3076s4sx3k2ky'
+// const contractAddress = 'secret166vullxuz7wtdq80t4mrzzvje3076s4sx3k2ky' // V1
 
+const contractAddress = 'secret1safn3rz3ehrlxyp8aqlz854ja76ukjnrg24k7m' // V2
 interface ConnectContextProps {
   keplrReady: boolean
   account?: Account
@@ -22,10 +23,15 @@ const ConnectContextProvider: React.FC = ({ children }) => {
   const [keplrReady, setKeplrReady] = useState<boolean>(false)
   const [account, setAccount] = useState<Account | undefined>(undefined)
   const [client, setClient] = useState<SigningCosmWasmClient | undefined>(undefined)
-  const [reminder, setReminder] = useState(" ");
+  const [reminder, setReminder] = useState("enter message");
+  const [address, setAddress] = useState("enter address");
 
-  const handleInput = (event: { target: { value: React.SetStateAction<string> } }) => {
+  const handleInputMsg = (event: { target: { value: React.SetStateAction<string> } }) => {
     setReminder(event.target.value);
+  };
+
+  const handleInputAddr = (event: { target: { value: React.SetStateAction<string> } }) => {
+    setAddress(event.target.value);
   };
 
   const logValue = () => {
@@ -141,8 +147,8 @@ const ConnectContextProvider: React.FC = ({ children }) => {
 
   const queryMyPosts = async () => {
     // Increment the counter
-    const handleMsg: HandleMsg = { read: {} }
-    console.log('Updating count');
+    const handleMsg = { read_all: {} }
+    console.log('Query my posting');
     const response = await client?.execute(contractAddress, handleMsg);
     const decoded = new TextDecoder().decode(response?.data);
     let message = JSON.parse(decoded);
@@ -171,9 +177,9 @@ const ConnectContextProvider: React.FC = ({ children }) => {
   }, [client])
 
 
-  const addReminder = async (reminderText: string) => {
+  const addReminder = async () => {
     // Increment the counter
-    const handleMsg = { record: { "reminder": reminderText } };
+    const handleMsg = { record: { "message": reminder, "receipient":address } };
     console.log('Updating count');
     const response = await client?.execute(contractAddress, handleMsg);
     console.log('response: ', response);
@@ -210,12 +216,12 @@ const ConnectContextProvider: React.FC = ({ children }) => {
             initialValue={Number(account?.balance[0].amount ?? '100') / 2}
             duration={1000} stepPrecision={0} /> SCRT</span>
         </span>
-        <button className="button read-button" onClick={(e) => { queryMyPosts() }}><span>Read</span></button>
+        <button className="button read-button" onClick={(e) => { queryMyPosts() }}><span>read messages</span></button>
         <div className="message-container">
           <span>Post a message</span>
-          <input className="input-field" onChange={handleInput} placeholder={reminder} />
-
-          <button className="button post-button" onClick={(e) => { addReminder(reminder) }}><span>Post</span></button>
+          <input className="input-field large"  onChange={handleInputMsg} placeholder={reminder} />
+          <input className="input-field smol" onChange={handleInputAddr} placeholder={address} />
+          <button className="button post-button" onClick={(e) => { addReminder() }}><span>post message</span></button>
         </div>
         <ConnectContext.Provider value={{ keplrReady, account }}>{children}</ConnectContext.Provider>
       </div>
