@@ -183,10 +183,15 @@ const ConnectContextProvider: React.FC = ({ children }) => {
     }
   }, [client])
 
-  useEffect(() => {
-    console.log(message)
-  }, [message])
+  const [delay, setDelay] = useState(false)
 
+  useEffect(() => {
+    if (message !== undefined) {
+      setTimeout(function () {
+        setDelay(true)
+      }, 1000);
+    }
+  }, [message])
 
   const addReminder = async () => {
     // Increment the counter
@@ -241,7 +246,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
         <ConnectContext.Provider value={{ keplrReady, account }}>{children}</ConnectContext.Provider>
       </div>
       {message !== undefined && (
-        <div className={`new-message-container ${message !== undefined ? 'moved' : ''}`}>
+        <div className={`new-message-container ${delay ? 'moved' : ''}`}>
           <span className="new-message dark-gradient-text">{message.message}</span>
           <span className="new-author dark-gradient-text">by {message.author}</span>
         </div>
