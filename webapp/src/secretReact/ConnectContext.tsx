@@ -213,7 +213,6 @@ const ConnectContextProvider: React.FC = ({ children }) => {
           <button onClick={(e) => { addReminder() }}>Post</button>
         </div>
         <ConnectContext.Provider value={{ keplrReady, account }}>{children}</ConnectContext.Provider>
-        <button onClick={(e) => { initContract() }}>Init</button>
       </div>
     </div>
   )
