@@ -19,12 +19,19 @@ const ConnectContext = React.createContext<ConnectContextProps>({
   keplrReady: false
 })
 
+interface MessageData{
+  message: string
+  author: String
+}
+
+
 const ConnectContextProvider: React.FC = ({ children }) => {
   const [keplrReady, setKeplrReady] = useState<boolean>(false)
   const [account, setAccount] = useState<Account | undefined>(undefined)
   const [client, setClient] = useState<SigningCosmWasmClient | undefined>(undefined)
   const [reminder, setReminder] = useState("enter message");
   const [address, setAddress] = useState("enter address");
+  const [message, setMessage] = useState<MessageData|undefined>(undefined)
 
   const handleInputMsg = (event: { target: { value: React.SetStateAction<string> } }) => {
     setReminder(event.target.value);
@@ -153,6 +160,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
     const decoded = new TextDecoder().decode(response?.data);
     let message = JSON.parse(decoded);
     console.log('read: ', message)
+    setMessage({message:message.read.message, author:message.read.sender})
 
 
   }
@@ -223,6 +231,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
           <input className="input-field smol" onChange={handleInputAddr} placeholder={address} />
           <button className="button post-button" onClick={(e) => { addReminder() }}><span>post message</span></button>
         </div>
+        {message!==undefined && (<h1>{message.message} by {message.author}</h1>)}
         <ConnectContext.Provider value={{ keplrReady, account }}>{children}</ConnectContext.Provider>
       </div>
     </div>
