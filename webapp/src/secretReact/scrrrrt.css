@@ -19,7 +19,7 @@ body {
 .main-container {
     display: flex;
     flex-direction: column;
-    height: 55vh;
+    align-items: center;
     width: 35vw;
     min-width: 760px;
 }
@@ -62,7 +62,7 @@ body {
     cursor: pointer;
     border-radius: 30px;
     font-weight: bold;
-    width: 150px;
+    width: 220px;
     padding: 5px 40px;
     color: #fff;
     transition: .5s;
@@ -79,7 +79,7 @@ body {
 }
 
 .button:hover {
-    letter-spacing: 5px;
+    letter-spacing: 2px;
     animation: 1s calc(100 * -.01s) 1 paused both opacify, 4s ease-in-out infinite pulse;
 }
 
@@ -96,33 +96,72 @@ body {
 }
 
 .input-field {
-    margin: 10px;
+    margin-bottom: 30px;
     border: none;
     border-radius: 10px;
-    height: 10vh;
     padding: 5px 10px;
     width: 30vw;
+    overflow: visible;
     background: rgb(245, 245, 245);
     animation: 1s calc(100 * -.01s) 1 paused both opacify;
     backdrop-filter: blur(20px);
     box-shadow: inset -0.25rem -0.25rem 0.5rem rgba(255, 255, 255, 0.07), inset 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.12), inset -0.75rem -0.75rem 1.75rem rgba(255, 255, 255, 0.07), inset 0.75rem 0.75rem 1.75rem rgba(0, 0, 0, 0.12);
 }
 
+.input-wrapper{
+    position: relative;
+}
+
+.input-field.large {
+    height: 10vh;
+}
+
+.input-field.smol {
+    height: fit-content;
+}
+
+.input-wrapper::after {
+    content:attr(data-text);
+    overflow: visible;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: calc(100% - 30px);
+    opacity: 0;
+    left: -20%;
+    font-size: smaller;
+    z-index: 10;
+    background: none;
+    backdrop-filter: none;
+    animation: none;
+    box-shadow: none;
+    transition: all .5s ease-in-out;
+    background: linear-gradient(228deg, rgba(21,64,67,1) 0%, rgba(20,55,67,1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.input-wrapper:hover::after {
+    left: 0%;
+    opacity: .9;
+}
+
+.input-wrapper:focus-within::after {
+    left: 0%;
+    opacity: .9;
+}
+
 .message-container {
-    margin-top: 40px;
+    margin-top: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.input-field:focus {
-    backdrop-filter: blur(20px);
-}
-
 h2 {
     font-weight: 800 !important;
     font-size: 4em !important;
-    background: linear-gradient(45deg, rgba(10, 32, 27, 1) 0%, rgba(24, 80, 47, 1) 100%);
+    background: linear-gradient(228deg, rgba(21,64,67,1) 0%, rgba(20,55,67,1) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -130,15 +169,34 @@ h2 {
 .header-address {
     font-size: 24px;
     font-weight: bold;
-
 }
 
 .dark-gradient-text {
-    background: linear-gradient(-25deg, rgba(10, 32, 27, 1) 0%, rgba(24, 80, 47, 1) 100%);
+    background: linear-gradient(228deg, rgba(21,64,67,1) 0%, rgba(20,55,67,1) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .address-container {
     display: flex;
+}
+
+.copy-button {
+    margin-left: 10px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+}
+
+.read-button {
+    margin-top: 30px;
+}
+
+.copy-button:hover {
+    animation: 1s calc(100 * -.01s) 1 paused both opacify, 4s ease-in-out infinite pulse;
+}
+
+.copy-button img {
+    width: 18px;
+    height: 18px;  
 }

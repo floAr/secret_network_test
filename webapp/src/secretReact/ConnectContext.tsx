@@ -4,6 +4,7 @@ import { HandleMsg } from '../types/handle_msg'
 import { QueryMsg } from '../types/query_msg'
 import './scrrrrt.css'
 import AnimatedNumber from "react-animated-number";
+import copy from './icons/copy_black.png'
 
 const chainId = 'holodeck-2'
 // const contractAddress = 'secret166vullxuz7wtdq80t4mrzzvje3076s4sx3k2ky' // V1
@@ -161,8 +162,6 @@ const ConnectContextProvider: React.FC = ({ children }) => {
     let message = JSON.parse(decoded);
     console.log('read: ', message)
     setMessage({message:message.read.message, author:message.read.sender})
-
-
   }
 
   useEffect(() => {
@@ -187,7 +186,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
 
   const addReminder = async () => {
     // Increment the counter
-    const handleMsg = { record: { "message": reminder, "receipient":address } };
+    const handleMsg = { record: { "message": reminder, "receipient": address } };
     console.log('Updating count');
     const response = await client?.execute(contractAddress, handleMsg);
     console.log('response: ', response);
@@ -196,9 +195,9 @@ const ConnectContextProvider: React.FC = ({ children }) => {
 
   function myFunction() {
     var text = account?.address ?? "no address";
-    navigator.clipboard.writeText(text).then(function() {
+    navigator.clipboard.writeText(text).then(function () {
       console.log('Async: Copying to clipboard was successful!');
-    }, function(err) {
+    }, function (err) {
       console.error('Async: Could not copy text: ', err);
     });
   }
@@ -212,7 +211,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
             <span className="header-address dark-gradient-text">
               {account?.address}
             </span>
-            <button className="copy-button" onClick={() => myFunction()}></button>
+            <button className="button copy-button" onClick={() => myFunction()}><img src={copy}/></button>
           </div>
           <span className="header-hello" >you have</span>
           <span className="header-balance dark-gradient-text"><AnimatedNumber value={Number(account?.balance[0].amount)} style={{
@@ -227,8 +226,12 @@ const ConnectContextProvider: React.FC = ({ children }) => {
         <button className="button read-button" onClick={(e) => { queryMyPosts() }}><span>read messages</span></button>
         <div className="message-container">
           <span>Post a message</span>
-          <input className="input-field large"  onChange={handleInputMsg} placeholder={reminder} />
-          <input className="input-field smol" onChange={handleInputAddr} placeholder={address} />
+          <div className="input-wrapper" data-text={"enter a message"}>
+            <input className="input-field large" onChange={handleInputMsg} placeholder={reminder} />
+          </div>
+          <div className="input-wrapper" data-text={"enter a address"} >
+            <input className="input-field smol" onChange={handleInputAddr} placeholder={address} />
+          </div>
           <button className="button post-button" onClick={(e) => { addReminder() }}><span>post message</span></button>
         </div>
         {message!==undefined && (<h1>{message.message} by {message.author}</h1>)}
