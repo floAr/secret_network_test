@@ -3,7 +3,7 @@ import { SigningCosmWasmClient, Account } from 'secretjs'
 import { HandleMsg } from '../types/handle_msg'
 import { QueryMsg } from '../types/query_msg'
 import './scrrrrt.css'
-import AnimatedNumber from "react-animated-number";
+import AnimatedNumber from 'react-animated-number'
 import copy from './icons/copy_black.png'
 
 const chainId = 'holodeck-2'
@@ -22,32 +22,30 @@ const ConnectContext = React.createContext<ConnectContextProps>({
 
 interface MessageData {
   message: string
-  author: String
+  author: string
 }
 
-
 const ConnectContextProvider: React.FC = ({ children }) => {
+  const isBrowser = typeof window !== 'undefined'
+
   const [keplrReady, setKeplrReady] = useState<boolean>(false)
   const [account, setAccount] = useState<Account | undefined>(undefined)
   const [client, setClient] = useState<SigningCosmWasmClient | undefined>(undefined)
-  const [reminder, setReminder] = useState("enter message");
-  const [address, setAddress] = useState("enter address");
+  const [reminder, setReminder] = useState('enter message')
+  const [address, setAddress] = useState('enter address')
   const [message, setMessage] = useState<MessageData | undefined>(undefined)
 
   const handleInputMsg = (event: { target: { value: React.SetStateAction<string> } }) => {
-    setReminder(event.target.value);
-  };
+    setReminder(event.target.value)
+  }
 
   const handleInputAddr = (event: { target: { value: React.SetStateAction<string> } }) => {
-    setAddress(event.target.value);
-  };
+    setAddress(event.target.value)
+  }
 
   const logValue = () => {
-    console.log(name);
-  };
-
-
-
+    console.log(name)
+  }
 
   const setupKeplr = async () => {
     // Define sleep
@@ -57,10 +55,6 @@ const ConnectContextProvider: React.FC = ({ children }) => {
     while (!window.keplr && !window.getOfflineSigner && !window.getEnigmaUtils) {
       await sleep(10)
     }
-
-    console.log(window.keplr)
-    console.log(window.getOfflineSigner)
-    console.log(window.getEnigmaUtils)
 
     await window.keplr.experimentalSuggestChain({
       chainId: chainId,
@@ -110,8 +104,6 @@ const ConnectContextProvider: React.FC = ({ children }) => {
     // This pops-up a window for the user to allow keplr access to the webpage.
     await window.keplr.enable(chainId)
 
-
-
     setKeplrReady(true)
   }
 
@@ -121,7 +113,7 @@ const ConnectContextProvider: React.FC = ({ children }) => {
     const keplrOfflineSigner = window.getOfflineSigner(chainId)
     const accounts = await keplrOfflineSigner.getAccounts()
 
-    setClient(new SigningCosmWasmClient(
+    const client = new SigningCosmWasmClient(
       'https://bootstrap.secrettestnet.io', // holodeck - https://bootstrap.secrettestnet.io; mainnet - user your LCD/REST provider
       accounts[0].address,
       keplrOfflineSigner,
@@ -138,7 +130,10 @@ const ConnectContextProvider: React.FC = ({ children }) => {
           gas: '300000'
         }
       }
-    ))
+    )
+
+    if (isBrowser) window.scrtClient = client
+    setClient(client)
   }
 
   const setupAccount = async () => {
@@ -148,18 +143,18 @@ const ConnectContextProvider: React.FC = ({ children }) => {
 
   const connectContract = async () => {
     // Query the current count
-    console.log('Querying contract for current count');
-    let response = await client?.queryContractSmart(contractAddress, { "stats": {} });
+    console.log('Querying contract for current count')
+    let response = await client?.queryContractSmart(contractAddress, { stats: {} })
     console.log((response as QueryMsg).stats)
   }
 
   const queryMyPosts = async () => {
     // Increment the counter
     const handleMsg = { read_all: {} }
-    console.log('Query my posting');
-    const response = await client?.execute(contractAddress, handleMsg);
-    const decoded = new TextDecoder().decode(response?.data);
-    let message = JSON.parse(decoded);
+    console.log('Query my posting')
+    const response = await client?.execute(contractAddress, handleMsg)
+    const decoded = new TextDecoder().decode(response?.data)
+    let message = JSON.parse(decoded)
     console.log('read: ', message)
     setMessage({ message: message.read.message, author: message.read.sender })
   }
@@ -168,18 +163,16 @@ const ConnectContextProvider: React.FC = ({ children }) => {
     setupKeplr()
   }, [])
 
-
   useEffect(() => {
     if (keplrReady) {
-      setupClient();
+      setupClient()
     }
   }, [keplrReady])
 
-
   useEffect(() => {
     if (client) {
-      setupAccount();
-      connectContract();
+      setupAccount()
+      connectContract()
     }
   }, [client])
 
@@ -187,61 +180,85 @@ const ConnectContextProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     if (message !== undefined) {
-      setTimeout(function () {
+      setTimeout(function() {
         setDelay(true)
-      }, 1000);
+      }, 1000)
     }
   }, [message])
 
   const addReminder = async () => {
     // Increment the counter
-    const handleMsg = { record: { "message": reminder, "receipient": address } };
-    console.log('Updating count');
-    const response = await client?.execute(contractAddress, handleMsg);
-    console.log('response: ', response);
-
+    const handleMsg = { record: { message: reminder, receipient: address } }
+    console.log('Updating count')
+    const response = await client?.execute(contractAddress, handleMsg)
+    console.log('response: ', response)
   }
 
   function myFunction() {
-    var text = account?.address ?? "no address";
-    navigator.clipboard.writeText(text).then(function () {
-      console.log('Async: Copying to clipboard was successful!');
-    }, function (err) {
-      console.error('Async: Could not copy text: ', err);
-    });
+    var text = account?.address ?? 'no address'
+    navigator.clipboard.writeText(text).then(
+      function() {
+        console.log('Async: Copying to clipboard was successful!')
+      },
+      function(err) {
+        console.error('Async: Could not copy text: ', err)
+      }
+    )
   }
 
   return (
     <div className="bodyy">
       <div className="main-container frosted-box">
         <span className="header-text">
-          <span className="header-hello"><h2>Hello</h2></span>
+          <span className="header-hello">
+            <h2>Hello</h2>
+          </span>
           <div className="address-container">
-            <span className="header-address dark-gradient-text">
-              {account?.address}
-            </span>
-            <button className="button copy-button" onClick={() => myFunction()}><img src={copy} /></button>
+            <span className="header-address dark-gradient-text">{account?.address}</span>
+            <button className="button copy-button" onClick={() => myFunction()}>
+              <img src={copy} />
+            </button>
           </div>
-          <span className="header-hello" >you have</span>
-          <span className="header-balance dark-gradient-text"><AnimatedNumber value={Number(account?.balance[0].amount)} style={{
-            transition: '0.8s ease-out',
-            fontSize: 24,
-            transitionProperty:
-              'opacity'
-          }}
-            initialValue={Number(account?.balance[0].amount ?? '100') / 2}
-            duration={1000} stepPrecision={0} /> SCRT</span>
+          <span className="header-hello">you have</span>
+          <span className="header-balance dark-gradient-text">
+            <AnimatedNumber
+              value={Number(account?.balance[0].amount)}
+              style={{
+                transition: '0.8s ease-out',
+                fontSize: 24,
+                transitionProperty: 'opacity'
+              }}
+              initialValue={Number(account?.balance[0].amount ?? '100') / 2}
+              duration={1000}
+              stepPrecision={0}
+            />{' '}
+            SCRT
+          </span>
         </span>
-        <button className="button read-button" onClick={(e) => { queryMyPosts() }}><span>read messages</span></button>
+        <button
+          className="button read-button"
+          onClick={e => {
+            queryMyPosts()
+          }}
+        >
+          <span>read messages</span>
+        </button>
         <div className="message-container">
           <span>Post a message</span>
-          <div className="input-wrapper" data-text={"enter a message"}>
+          <div className="input-wrapper" data-text={'enter a message'}>
             <input className="input-field large" onChange={handleInputMsg} placeholder={reminder} />
           </div>
-          <div className="input-wrapper" data-text={"enter a address"} >
+          <div className="input-wrapper" data-text={'enter a address'}>
             <input className="input-field smol" onChange={handleInputAddr} placeholder={address} />
           </div>
-          <button className="button post-button" onClick={(e) => { addReminder() }}><span>post message</span></button>
+          <button
+            className="button post-button"
+            onClick={e => {
+              addReminder()
+            }}
+          >
+            <span>post message</span>
+          </button>
         </div>
         <ConnectContext.Provider value={{ keplrReady, account }}>{children}</ConnectContext.Provider>
       </div>
